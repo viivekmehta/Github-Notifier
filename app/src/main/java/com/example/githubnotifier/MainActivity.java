@@ -13,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -23,9 +24,13 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
 
 
-    public void createWebhook(HashMap randomNumbers) {
-        Log.i("random number : ","hey the number in webhook is --> "+randomNumbers.get("randomNumber"));
-        Toast.makeText(getBaseContext(),"hey the random number is --> "+randomNumbers.get("randomNumber"),Toast.LENGTH_LONG).show();
+    public void createWebhook(final HashMap randomNumbers) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Log.i("random number : ","hey the number in webhook is --> "+randomNumbers.get("randomNumber"));
+                Toast.makeText(getBaseContext(),"hey the random number is --> "+randomNumbers.get("randomNumber"),Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void getRandomNumberFromServer(View view) {
@@ -34,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
                 "}";
         String url = "http://041e6194.ngrok.io/getRandomNumber";
         final HashMap<String,String> randomNumbers = new HashMap<String,String>();
-        final String randomNumber = null;
         final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
         JsonRequest jsonRequest = new JsonRequest(Request.Method.POST,
                 url,
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("error","Hey your request is not completed due to connection error!!");
+                        Log.i("error","Hey "+ error +"!!");
                         Toast.makeText(MainActivity.this, "Hey "+ error +"!!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 randomNumbers.put("randomNumber","okok"+(new String(response.data)).toString());
                 Log.i("random number : ","hey the number in response is --> "+randomNumbers.get("randomNumber"));
                 createWebhook(randomNumbers);
-                return null;
+                return Response.success(response, HttpHeaderParser.parseCacheHeaders(response));
             }
         };
         requestQueue.add(jsonRequest);
