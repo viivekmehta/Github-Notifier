@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                     public Map<String, String> getHeaders() throws AuthFailureError {
                         Map<String, String> params = new HashMap<String, String>();
                         params.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-                        params.put("Authorization", "4329649ab3af9c1a19660744570f80eccaacba42");
                         return params;
                     }
 
